@@ -16,9 +16,11 @@ public class StartGame : MonoBehaviour
             sr.sprite = Sprite.Create(CellSprite, new Rect(0f, 0f, CellSprite.width, CellSprite.height), new Vector2(0.5f, 0.5f), 100f);
             sr.color = Color.red;
 
+            circle.GetComponent<Transform>().localScale = new Vector2(0.5f, 0.5f);
             circle.AddComponent<CircleCollider2D>();
             circle.AddComponent<Rigidbody2D>();
-            circle.GetComponent<Transform>().position = new Vector2(i*2, i*3);
+            circle.GetComponent<Transform>().position = new Vector2(0, i*3);
+            
         }
     }
 

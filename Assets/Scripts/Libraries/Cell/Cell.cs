@@ -37,7 +37,7 @@ public class Cell : MonoBehaviour
         //или других клеток в случае EnemyCell, в этом месте вызывается метод поведения или принятия решения
         //в котором уже будет вызываться метод moove ну или прямо там движение прописанно будет.
 
-        Energy -= Vision * _radiusEnergyConsumptionCoef;
+        Energy -= Vision * _radiusEnergyConsumptionCoef * Time.deltaTime;
 
         if (Energy <= 0)
             Destroy(gameObject, .5f);

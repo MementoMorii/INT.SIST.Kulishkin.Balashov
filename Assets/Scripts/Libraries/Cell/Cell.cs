@@ -6,14 +6,15 @@ public class Cell : MonoBehaviour
 {
     private HashSet<int> _triggerObjects = new HashSet<int>();
     private HashSet<int> _colidedObjects = new HashSet<int>();
+    private Reproduction _reproduction = new Reproduction();
 
-    public double Speed { get; set; }
-    public double Vision { get; set; }
-    public double Energy { get; set; }
+    public float Speed { get; set; }
+    public float Vision { get; set; }
+    public float Energy { get; set; }
     public int LifeExpectancy { get; set; }
 
-    private double _speedEnergyConsumptionCoef = 1.5f;
-    private double _radiusEnergyConsumptionCoef = 1.2f;
+    private float _speedEnergyConsumptionCoef = 1.5f;
+    private float _radiusEnergyConsumptionCoef = 1.2f;
 
     protected Transform thisTransform;
 
@@ -31,6 +32,7 @@ public class Cell : MonoBehaviour
     void Update()
     {
         if (Energy >= 80)
+            _reproduction.reproduct(gameObject);
             return; // вызывается метод размножения и в него передаётся gameObject Reproduction(gameObgect)
 
         //todo возможно надо переопределить этот метод в наследниках чтобы передать в него видимую еду и врагов
@@ -40,8 +42,17 @@ public class Cell : MonoBehaviour
         Energy -= Vision * _radiusEnergyConsumptionCoef * Time.deltaTime;
 
         if (Energy <= 0)
-            Destroy(gameObject, .5f);
+            Destroy(gameObject);
     }
+
+    protected void moove(float angle)
+    {
+        thisTransform.position += new Vector3(1, 0, 0) * Speed * Time.deltaTime * Mathf.Cos(2 * Mathf.PI * angle);
+        thisTransform.position += new Vector3(0, 1, 0) * Speed * Time.deltaTime * Mathf.Sin(2 * Mathf.PI * angle);
+    }
+
+    virtual public void makeDecision() { }
+
     virtual public void OnTriggerEnter2D(Collider2D collision)
     {
         if(collision.isTrigger == false)

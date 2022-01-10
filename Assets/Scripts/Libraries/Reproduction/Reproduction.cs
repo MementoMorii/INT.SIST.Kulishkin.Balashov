@@ -8,18 +8,13 @@ using UnityEngine;
 
 public class Reproduction :  MonoBehaviour
 {
-    private HashSet<int> _allObjects = new HashSet<int>();
-
-    // Start is called before the first frame update
-    void Start()
+    private int _countChilds = 2;
+    public void reproduct(GameObject gameObject)
     {
-
-    }
-
-    // Update is called once per frame 
-    void Update()
-    {
-        
+        for(int i = 0; i < _countChilds; i++)
+        {
+            Instantiate(gameObject);
+        }      
     }
 }
 

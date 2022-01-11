@@ -57,5 +57,28 @@ public class EnemyCell : Cell
 
         }
     }
+
+    /// <summary>
+    /// Метод прниятия решения о напрвлении движения.
+    /// </summary>
+    public override void makeDecision()
+    {
+        var position = thisTransform.position; 
+        var nearestCellPosition = getNearestPosition(position, _cellsInVision);
+        var angle = getCellAngle(position, nearestCellPosition) / (2 * Mathf.PI);
+        moove(angle);
+    }
+
+    /// <summary>
+    /// Метод получения угла направления на клетку.
+    /// </summary>
+    /// <param name="curPosition"></param>
+    /// <param name="targetCellPosition"></param>
+    /// <returns>Угол направления на клетку в радианах.</returns>
+    private float getCellAngle(Vector3 curPosition, Vector3 targetCellPosition)
+    {
+        var directionVector = targetCellPosition - curPosition;
+        return Mathf.Atan2(directionVector.y, directionVector.x);
+    }
 }
 

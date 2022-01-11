@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 
@@ -83,56 +82,47 @@ public class VeganCell : Cell
 
         var nearestFoodPosition = getNearestPosition(position, _foodInVision);
         var nearestEnemyPosition = getNearestPosition(position, _enemyInVision);
-
-        //определяем напрвление, бежать от врага, и направление на еду, и берём направление между ними.
-        //добавляем в эту модель мутабельный коэффициент смещения к еде или от врага, от которого зависит к какому
-        //напрвлению будет ближе результирующее направление.
-
+        var foodAngle = getFoodAngle(position, nearestFoodPosition);
+        var fromEnemyAngle = getEnemyAngle(position, nearestEnemyPosition);
+        var directionAngle = getDirectionAngle(foodAngle, fromEnemyAngle) / (2 * Mathf.PI);
+        moove(directionAngle);
     }
 
     /// <summary>
-    /// Метод определения ближайшей точки к текущей точке.
+    /// Метод определения угла направления на еду.
     /// </summary>
-    /// <param name="curPosition">Текущая точка.</param>
-    /// <param name="gameObjects">Список точек.</param>
-    /// <returns></returns>
-    private Vector3 getNearestPosition(Vector3 curPosition, HashSet<GameObject> gameObjects)
+    /// <param name="curPosition"></param>
+    /// <param name="targetFoodPosition"></param>
+    /// <returns>Угол направления на еду в радианах</returns>
+    private float getFoodAngle(Vector3 curPosition, Vector3 targetFoodPosition)
     {
-        float minDistance = getDistance(curPosition, gameObjects.ElementAt(0).transform.position);
-        var nearestPosition = gameObjects.ElementAt(0).transform.position;
-        foreach (var gameObj in gameObjects)
-        {
-            var gameObjPosition = gameObj.transform.position;
-            var curFoodDistance = getDistance(curPosition, gameObjPosition);
-            if (curFoodDistance <= minDistance)
-            {
-                minDistance = curFoodDistance;
-                nearestPosition = gameObjPosition;
-            }
-        }
-        return nearestPosition;
-    }
-    /// <summary>
-    /// Метод определения расстояния между двумя точками.
-    /// </summary>
-    /// <param name="curPosition"> Текущая точка.</param>
-    /// <param name="targetPosition">Целевая точка.</param
-    /// <returns></returns>
-    private float getDistance(Vector3 curPosition, Vector3 targetPosition)
-    {
-        var vector = curPosition - targetPosition;
-        return vector.magnitude;
+        var directionVector = targetFoodPosition - curPosition;
+        return Mathf.Atan2(directionVector.y, directionVector.x);
     }
 
     /// <summary>
-    /// Метод определения угла.
+    /// Метод определения угла направления от Enemy.
     /// </summary>
-    /// <param name="start"></param>
-    /// <param name="end"></param>
-    /// <returns></returns>
-    private float getAngle(Vector3 start, Vector3 end)
+    /// <param name="curPosition"></param>
+    /// <param name="targetEnemyPosition"></param>
+    /// <returns>Угол направления от Enemy в радианах</returns>
+    private float getEnemyAngle(Vector3 curPosition, Vector3 targetEnemyPosition)
     {
-        return 0.1f;
+        var directionVector = targetEnemyPosition - curPosition;
+        var angle = Mathf.Atan2(directionVector.y, directionVector.x) + Mathf.PI;
+        return angle < 2 * Mathf.PI ? angle : (angle - 2 * Mathf.PI);
+    }
+
+    /// <summary>
+    /// Метод определения угла направления между едой и направлением от Enemy.
+    /// </summary>
+    /// <param name="foodAngle"></param>
+    /// <param name="fromEnemyAngle"></param>
+    /// <returns>Угол направления в радианах</returns>
+    private float getDirectionAngle(float foodAngle, float fromEnemyAngle)
+    {
+        return foodAngle < fromEnemyAngle ? foodAngle + (fromEnemyAngle - foodAngle) * BetweenFoodEnemyCoefAngle :
+            fromEnemyAngle + (foodAngle - fromEnemyAngle) * BetweenFoodEnemyCoefAngle;
     }
 }
 

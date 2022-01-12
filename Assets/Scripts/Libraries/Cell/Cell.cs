@@ -1,14 +1,12 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
 public class Cell : MonoBehaviour
 {
-    private HashSet<int> _triggerObjects = new HashSet<int>();
-    private HashSet<int> _colidedObjects = new HashSet<int>();
     private Reproduction _reproduction = new Reproduction();
 
+    public float MutationCoef { get; set; }
     public float Speed { get; set; }
     public float Vision { get; set; }
     public float Energy { get; set; }
@@ -19,8 +17,8 @@ public class Cell : MonoBehaviour
     /// </summary>
     public float BetweenFoodEnemyCoefAngle { get; set; } 
 
-    private float _speedEnergyConsumptionCoef = 1.5f;
-    private float _radiusEnergyConsumptionCoef = 1.2f;
+    private float _speedEnergyConsumptionCoef = 1f;
+    private float _radiusEnergyConsumptionCoef = 1f;
 
     protected Transform thisTransform;
 
@@ -33,55 +31,61 @@ public class Cell : MonoBehaviour
         BetweenFoodEnemyCoefAngle = 0.5f;
         Speed = .1f;
         Vision = .1f;
+        MutationCoef = 0.1f;
+
+        _reproduction.Mutate(this);
     }
 
     // Update is called once per frame
     void Update()
     {
         if (Energy >= 80)
-            _reproduction.reproduct(gameObject);
-            return; // вызывается метод размножения и в него передаётся gameObject Reproduction(gameObgect)
+            // вызывается метод размножения и в него передаётся gameObject Reproduction(gameObgect)
+            _reproduction.Reproduct(gameObject);
+            return; 
 
         //отнимание энергии за Vision. Формулу ещё можно подкорректировать.
-        Energy -= Vision * _radiusEnergyConsumptionCoef * Time.deltaTime;
+        Energy -= Vision * Vision * _radiusEnergyConsumptionCoef * Time.deltaTime;
 
-        makeDecision();
+        MakeDecision();
 
         if (Energy <= 0)
             Destroy(gameObject);
     }
 
-    protected void moove(float angle)
+    /// <summary>
+    /// Mетод осуществлющий перемещение клетки в заданном направлении с её скоростью.
+    /// </summary>
+    /// <param name="angle">Направление от 0 до 1, 0 это ось х, направление вращения против часовой.</param>
+    protected void Moove(float angle)
     {
         thisTransform.position += new Vector3(1, 0, 0) * Speed * Time.deltaTime * Mathf.Cos(2 * Mathf.PI * angle);
         thisTransform.position += new Vector3(0, 1, 0) * Speed * Time.deltaTime * Mathf.Sin(2 * Mathf.PI * angle);
-        Energy -= Speed * Speed / 2 * Time.deltaTime;
+        Energy -= Speed * Speed / 2 * Time.deltaTime * _speedEnergyConsumptionCoef;
     }
 
-    virtual public void makeDecision() { }
+    /// <summary>
+    /// Метод принятия решения о направлении движения.
+    /// </summary>
+    virtual public void MakeDecision() { }
 
-    virtual public void OnTriggerEnter2D(Collider2D collision)
-    {
-        if(collision.isTrigger == false)
-           _triggerObjects.Add(collision.gameObject.GetInstanceID());
-    }
-    virtual public void OnTriggerExit2D(Collider2D collision)
-    {
-        if (collision.isTrigger == false)
-            _triggerObjects.Remove(collision.gameObject.GetInstanceID());
-    }
-    virtual public void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.tag != "InterractiveObject") return;
-        _colidedObjects.Add(collision.gameObject.GetInstanceID());
-        gameObject.GetComponent<SpriteRenderer>().color = Color.yellow;
-    }
-    private void OnCollisionExit2D(Collision2D collision)
-    {
-        if (collision.gameObject.tag != "InterractiveObject") return;
-        _colidedObjects.Remove(collision.gameObject.GetInstanceID());
-        gameObject.GetComponent<SpriteRenderer>().color = Color.red;
-    }
+    /// <summary>
+    /// Метод срабатывающий при появлении объектов в обзоре клетки.
+    /// </summary>
+    /// <param name="collision"></param>
+    virtual public void OnTriggerEnter2D(Collider2D collision) { }
+
+    /// <summary>
+    /// Метод срабатывающий при выходе объектов из обзора клетки.
+    /// </summary>
+    /// <param name="collision"></param>
+    virtual public void OnTriggerExit2D(Collider2D collision) { }
+
+    /// <summary>
+    /// Метод срабатывающий при столкновении клетки с другим объектом.
+    /// </summary>
+    /// <param name="collision"></param>
+    virtual public void OnCollisionEnter2D(Collision2D collision) { }
 
     /// <summary>
     /// Метод определения ближайшей точки к текущей точке.
@@ -89,14 +93,14 @@ public class Cell : MonoBehaviour
     /// <param name="curPosition">Текущая точка.</param>
     /// <param name="gameObjects">Список точек.</param>
     /// <returns></returns>
-    public Vector3 getNearestPosition(Vector3 curPosition, HashSet<GameObject> gameObjects)
+    public Vector3 GetNearestPosition(Vector3 curPosition, HashSet<GameObject> gameObjects)
     {
-        float minDistance = getDistance(curPosition, gameObjects.ElementAt(0).transform.position);
+        float minDistance = GetDistance(curPosition, gameObjects.ElementAt(0).transform.position);
         var nearestPosition = gameObjects.ElementAt(0).transform.position;
         foreach (var gameObj in gameObjects)
         {
             var gameObjPosition = gameObj.transform.position;
-            var curFoodDistance = getDistance(curPosition, gameObjPosition);
+            var curFoodDistance = GetDistance(curPosition, gameObjPosition);
             if (curFoodDistance <= minDistance)
             {
                 minDistance = curFoodDistance;
@@ -112,7 +116,7 @@ public class Cell : MonoBehaviour
     /// <param name="curPosition"> Текущая точка.</param>
     /// <param name="targetPosition">Целевая точка.</param
     /// <returns></returns>
-    private float getDistance(Vector3 curPosition, Vector3 targetPosition)
+    private float GetDistance(Vector3 curPosition, Vector3 targetPosition)
     {
         var vector = curPosition - targetPosition;
         return vector.magnitude;

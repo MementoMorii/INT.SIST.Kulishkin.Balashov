@@ -5,11 +5,8 @@ using UnityEngine;
 public class EnemyCell : Cell
 {
     private HashSet<GameObject> _cellsInVision = new HashSet<GameObject>();
-    
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="collision"></param>
+
+    ///  <inheritdoc>
     public override void OnTriggerEnter2D(Collider2D collision)
     {
         switch (collision.gameObject.tag)
@@ -23,10 +20,7 @@ public class EnemyCell : Cell
         }
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="collision"></param>
+    ///  <inheritdoc>
     virtual public void OnTriggerExit2D(Collider2D collision)
     {
         switch (collision.gameObject.tag)
@@ -40,10 +34,7 @@ public class EnemyCell : Cell
         }
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="collision"></param>
+    ///  <inheritdoc>
     public override void OnCollisionEnter2D(Collision2D collision)
     {
         switch (collision.gameObject.tag)
@@ -58,15 +49,13 @@ public class EnemyCell : Cell
         }
     }
 
-    /// <summary>
-    /// Метод прниятия решения о напрвлении движения.
-    /// </summary>
-    public override void makeDecision()
+    ///  <inheritdoc>
+    public override void MakeDecision()
     {
         var position = thisTransform.position; 
-        var nearestCellPosition = getNearestPosition(position, _cellsInVision);
+        var nearestCellPosition = GetNearestPosition(position, _cellsInVision);
         var angle = getCellAngle(position, nearestCellPosition) / (2 * Mathf.PI);
-        moove(angle);
+        Moove(angle);
     }
 
     /// <summary>

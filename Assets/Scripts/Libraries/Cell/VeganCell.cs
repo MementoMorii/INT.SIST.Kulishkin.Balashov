@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 
@@ -8,10 +7,7 @@ public class VeganCell : Cell
     private HashSet<GameObject> _foodInVision = new HashSet<GameObject>();
     private HashSet<GameObject> _enemyInVision = new HashSet<GameObject>();
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="collision"></param>
+    ///  <inheritdoc>
     public override void OnTriggerEnter2D(Collider2D collision)
     {
         switch (collision.gameObject.tag)
@@ -27,13 +23,9 @@ public class VeganCell : Cell
             default:
                 break;
         }
-
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="collision"></param>
+    ///  <inheritdoc>
     virtual public void OnTriggerExit2D(Collider2D collision)
     {
         switch (collision.gameObject.tag)
@@ -51,10 +43,7 @@ public class VeganCell : Cell
         }
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="collision"></param>
+    ///  <inheritdoc>
     public override void OnCollisionEnter2D(Collision2D collision)
     {
         switch (collision.gameObject.tag)
@@ -69,23 +58,20 @@ public class VeganCell : Cell
 
             default:
                 break;
-
         }
     }
 
-    /// <summary>
-    /// Метод прниятия решения о напрвлении движения.
-    /// </summary>
-    public override void makeDecision()
+    ///  <inheritdoc>
+    public override void MakeDecision()
     {
         var position = thisTransform.position;
 
-        var nearestFoodPosition = getNearestPosition(position, _foodInVision);
-        var nearestEnemyPosition = getNearestPosition(position, _enemyInVision);
-        var foodAngle = getFoodAngle(position, nearestFoodPosition);
-        var fromEnemyAngle = getEnemyAngle(position, nearestEnemyPosition);
-        var directionAngle = getDirectionAngle(foodAngle, fromEnemyAngle) / (2 * Mathf.PI);
-        moove(directionAngle);
+        var nearestFoodPosition = GetNearestPosition(position, _foodInVision);
+        var nearestEnemyPosition = GetNearestPosition(position, _enemyInVision);
+        var foodAngle = GetFoodAngle(position, nearestFoodPosition);
+        var fromEnemyAngle = GetEnemyAngle(position, nearestEnemyPosition);
+        var directionAngle = GetDirectionAngle(foodAngle, fromEnemyAngle) / (2 * Mathf.PI);
+        Moove(directionAngle);
     }
 
     /// <summary>
@@ -94,7 +80,7 @@ public class VeganCell : Cell
     /// <param name="curPosition"></param>
     /// <param name="targetFoodPosition"></param>
     /// <returns>Угол направления на еду в радианах</returns>
-    private float getFoodAngle(Vector3 curPosition, Vector3 targetFoodPosition)
+    private float GetFoodAngle(Vector3 curPosition, Vector3 targetFoodPosition)
     {
         var directionVector = targetFoodPosition - curPosition;
         return Mathf.Atan2(directionVector.y, directionVector.x);
@@ -106,7 +92,7 @@ public class VeganCell : Cell
     /// <param name="curPosition"></param>
     /// <param name="targetEnemyPosition"></param>
     /// <returns>Угол направления от Enemy в радианах</returns>
-    private float getEnemyAngle(Vector3 curPosition, Vector3 targetEnemyPosition)
+    private float GetEnemyAngle(Vector3 curPosition, Vector3 targetEnemyPosition)
     {
         var directionVector = targetEnemyPosition - curPosition;
         var angle = Mathf.Atan2(directionVector.y, directionVector.x) + Mathf.PI;
@@ -119,7 +105,7 @@ public class VeganCell : Cell
     /// <param name="foodAngle"></param>
     /// <param name="fromEnemyAngle"></param>
     /// <returns>Угол направления в радианах</returns>
-    private float getDirectionAngle(float foodAngle, float fromEnemyAngle)
+    private float GetDirectionAngle(float foodAngle, float fromEnemyAngle)
     {
         return foodAngle < fromEnemyAngle ? foodAngle + (fromEnemyAngle - foodAngle) * BetweenFoodEnemyCoefAngle :
             fromEnemyAngle + (foodAngle - fromEnemyAngle) * BetweenFoodEnemyCoefAngle;

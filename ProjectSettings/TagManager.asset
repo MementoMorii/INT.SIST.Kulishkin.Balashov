@@ -8,6 +8,8 @@ TagManager:
   - InterractiveObject
   - Vision
   - Food
+  - Vegan
+  - Enemy
   layers:
   - Default
   - TransparentFX

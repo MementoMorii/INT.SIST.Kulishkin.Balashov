@@ -4,8 +4,8 @@ using System.Linq;
 
 public class Cell : MonoBehaviour
 {
-    private Reproduction _reproduction = new Reproduction();
-
+    
+    private Reproduction _reproduction = new Reproduction(); 
     public float MutationCoef { get; set; }
     public float Speed { get; set; }
     public float Vision { get; set; }
@@ -29,8 +29,8 @@ public class Cell : MonoBehaviour
         LifeExpectancy = 0;
         Energy = 70;
         BetweenFoodEnemyCoefAngle = 0.5f;
-        Speed = .1f;
-        Vision = .1f;
+        Speed = 20f;
+        Vision = 100f;
         MutationCoef = 0.1f;
 
         _reproduction.Mutate(this);
@@ -40,9 +40,12 @@ public class Cell : MonoBehaviour
     void Update()
     {
         if (Energy >= 80)
+        {
             // вызывается метод размножения и в него передаётся gameObject Reproduction(gameObgect)
             _reproduction.Reproduct(gameObject);
-            return; 
+            return;
+        }
+            
 
         //отнимание энергии за Vision. Формулу ещё можно подкорректировать.
         Energy -= Vision * Vision * _radiusEnergyConsumptionCoef * Time.deltaTime;

@@ -7,26 +7,7 @@ public class VeganCell : Cell
     private HashSet<GameObject> _foodInVision = new HashSet<GameObject>();
     private HashSet<GameObject> _enemyInVision = new HashSet<GameObject>();
 
-    ///  <inheritdoc>
-    public override void OnTriggerEnter2D(Collider2D collision)
-    {
-        switch (collision.gameObject.tag)
-        {
-            case "Food":
-                _foodInVision.Add(collision.gameObject);
-                break;
-
-            case "Enemy":
-                _enemyInVision.Add(collision.gameObject);
-                break;
-            
-            default:
-                break;
-        }
-    }
-
-    ///  <inheritdoc>
-    virtual public void OnTriggerExit2D(Collider2D collision)
+    public void VisionTriggerExit(Collider2D collision)
     {
         switch (collision.gameObject.tag)
         {
@@ -37,7 +18,26 @@ public class VeganCell : Cell
             case "Enemy":
                 _enemyInVision.Remove(collision.gameObject);
                 break;
-            
+
+            default:
+                break;
+        }
+    }
+    public void VisionTriggerEnter(Collider2D collision)
+    {
+        Debug.Log("вошел");
+        switch (collision.gameObject.tag)
+        {
+            case "Food":
+                _foodInVision.Add(collision.gameObject);
+                Debug.Log("food");
+                break;
+
+            case "Enemy":
+                _enemyInVision.Add(collision.gameObject);
+                Debug.Log("enemy");
+                break;
+
             default:
                 break;
         }

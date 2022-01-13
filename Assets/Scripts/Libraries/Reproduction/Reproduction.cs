@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
 
 
-public class Reproduction :  MonoBehaviour
+public class Reproduction
 {
     private int _countChilds = 2;
     private int _coountOfNotMutableChilds = 0;
-    
+
     /// <summary>
     /// Метод размножения клетки.
     /// </summary>
@@ -15,9 +15,9 @@ public class Reproduction :  MonoBehaviour
         for(int i = 0; i < _countChilds; i++)
         {
             if(i < _coountOfNotMutableChilds)
-                Instantiate(gameObject);
+                MonoBehaviour.Instantiate(gameObject);
 
-            Instantiate(gameObject);
+            MonoBehaviour.Instantiate(gameObject);
         }      
     }
 

@@ -4,24 +4,25 @@ using UnityEngine;
 
 public class StartGame : MonoBehaviour
 {
+    public GameObject enemyPrefab;
+    public GameObject veganPrefab;
+
     public Texture2D CellSprite;
     // Start is called before the first frame update
     void Start()
     {
-        //for (int i = 0; i < 10; i++)
-        //{
-        //    var circle = new GameObject();
-        //    circle.AddComponent<SpriteRenderer>();
-        //    var sr = circle.GetComponent<SpriteRenderer>();
-        //    sr.sprite = Sprite.Create(CellSprite, new Rect(0f, 0f, CellSprite.width, CellSprite.height), new Vector2(0.5f, 0.5f), 100f);
-        //    sr.color = Color.red;
+        for (int i = 0; i < 10; i++)
+        {
+            Vector3 position = new Vector3(Random.Range(-10.0f, 0f), Random.Range(-10.0f, 0f), 0);
+            Instantiate(enemyPrefab, position, Quaternion.identity);
+        }
 
-        //    circle.GetComponent<Transform>().localScale = new Vector2(0.5f, 0.5f);
-        //    circle.AddComponent<CircleCollider2D>();
-        //    circle.AddComponent<Rigidbody2D>();
-        //    circle.GetComponent<Transform>().position = new Vector2(0, i*3);
-            
-        //}
+        for (int i = 0; i < 10; i++)
+        {
+            Vector3 position = new Vector3(Random.Range(0f, 10.0f), Random.Range(0f, 10.0f), 0);
+            Instantiate(veganPrefab, position, Quaternion.identity);
+        }
+
     }
 
     // Update is called once per frame

@@ -7,26 +7,25 @@ public class EnemyCell : Cell
     private HashSet<GameObject> _cellsInVision = new HashSet<GameObject>();
 
     ///  <inheritdoc>
-    public override void OnTriggerEnter2D(Collider2D collision)
+
+    public void VisionTriggerExit(Collider2D collision)
     {
         switch (collision.gameObject.tag)
         {
-            case "Cell":
-                _cellsInVision.Add(collision.gameObject);
+            case "Vegan":
+                _cellsInVision.Remove(collision.gameObject);
                 break;
-            
+
             default:
                 break;
         }
     }
-
-    ///  <inheritdoc>
-    virtual public void OnTriggerExit2D(Collider2D collision)
+    public void VisionTriggerEnter(Collider2D collision)
     {
         switch (collision.gameObject.tag)
         {
-            case "Cell":
-                _cellsInVision.Remove(collision.gameObject);
+            case "Vegan":
+                _cellsInVision.Add(collision.gameObject);
                 break;
 
             default:

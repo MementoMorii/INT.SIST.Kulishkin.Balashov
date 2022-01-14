@@ -30,7 +30,7 @@ public class Cell : MonoBehaviour
         Energy = 70;
         BetweenFoodEnemyCoefAngle = 0.5f;
         Speed = 20f;
-        Vision = 100f;
+        Vision = 0.5f;
         MutationCoef = 0.1f;
 
         _reproduction.Mutate(this);
@@ -111,6 +111,15 @@ public class Cell : MonoBehaviour
             }
         }
         return nearestPosition;
+    }
+
+    /// <summary>
+    /// Метод задания радиуса коллайдера.
+    /// </summary>
+    public void SetVision()
+    {
+        var collider = gameObject.GetComponent<CircleCollider2D>();
+        collider.radius = Vision;
     }
 
     /// <summary>

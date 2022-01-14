@@ -32,6 +32,7 @@ public class Reproduction
         cell.Vision += cell.Vision * Random.Range(-3, 3) * cell.MutationCoef;
         if (cell.Vision < 0)
             cell.Vision = 0;
+        cell.SetVision();
 
         cell.BetweenFoodEnemyCoefAngle = cell.Vision + Random.Range(-1, 1) * cell.MutationCoef;
         if (cell.BetweenFoodEnemyCoefAngle > 1)

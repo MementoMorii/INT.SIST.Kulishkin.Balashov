@@ -11,17 +11,16 @@ public class Enemy_vision : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
-    {
+    void Update() { 
         
     }
 
-    void OnTriggerEnter(Collider2D collision)
+    void OnTriggerEnter2D(Collider2D collision)
     {
         transform.parent.GetComponent<EnemyCell>().VisionTriggerEnter(collision);
     }
 
-    void OnTriggerExit(Collider2D collision)
+    void OnTriggerExit2D(Collider2D collision)
     {
         transform.parent.GetComponent<EnemyCell>().VisionTriggerExit(collision);
     }

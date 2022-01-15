@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-public class Cell : MonoBehaviour
+public abstract class Cell : MonoBehaviour
 {
     
     private Reproduction _reproduction = new Reproduction(); 
@@ -60,7 +60,7 @@ public class Cell : MonoBehaviour
     /// Mетод осуществлющий перемещение клетки в заданном направлении с её скоростью.
     /// </summary>
     /// <param name="angle">Направление от 0 до 1, 0 это ось х, направление вращения против часовой.</param>
-    protected void Moove(float angle)
+    public void Moove(float angle)
     {
         thisTransform.position += new Vector3(1, 0, 0) * Speed * Time.deltaTime * Mathf.Cos(2 * Mathf.PI * angle);
         thisTransform.position += new Vector3(0, 1, 0) * Speed * Time.deltaTime * Mathf.Sin(2 * Mathf.PI * angle);
@@ -70,25 +70,25 @@ public class Cell : MonoBehaviour
     /// <summary>
     /// Метод принятия решения о направлении движения.
     /// </summary>
-    virtual public void MakeDecision() { }
+    abstract public void MakeDecision();
 
-    /// <summary>
-    /// Метод срабатывающий при появлении объектов в обзоре клетки.
-    /// </summary>
-    /// <param name="collision"></param>
-    virtual public void OnTriggerEnter2D(Collider2D collision) { }
+    ///// <summary>
+    ///// Метод срабатывающий при появлении объектов в обзоре клетки.
+    ///// </summary>
+    ///// <param name="collision"></param>
+    //abstract public void OnTriggerEnter2D(Collider2D collision);
 
-    /// <summary>
-    /// Метод срабатывающий при выходе объектов из обзора клетки.
-    /// </summary>
-    /// <param name="collision"></param>
-    virtual public void OnTriggerExit2D(Collider2D collision) { }
+    ///// <summary>
+    ///// Метод срабатывающий при выходе объектов из обзора клетки.
+    ///// </summary>
+    ///// <param name="collision"></param>
+    //abstract public void OnTriggerExit2D(Collider2D collision);
 
-    /// <summary>
-    /// Метод срабатывающий при столкновении клетки с другим объектом.
-    /// </summary>
-    /// <param name="collision"></param>
-    virtual public void OnCollisionEnter2D(Collision2D collision) { }
+    ///// <summary>
+    ///// Метод срабатывающий при столкновении клетки с другим объектом.
+    ///// </summary>
+    ///// <param name="collision"></param>
+    //abstract public void OnCollisionEnter2D(Collision2D collision);
 
     /// <summary>
     /// Метод определения ближайшей точки к текущей точке.
@@ -98,19 +98,28 @@ public class Cell : MonoBehaviour
     /// <returns></returns>
     public Vector3 GetNearestPosition(Vector3 curPosition, HashSet<GameObject> gameObjects)
     {
-        float minDistance = GetDistance(curPosition, gameObjects.ElementAt(0).transform.position);
-        var nearestPosition = gameObjects.ElementAt(0).transform.position;
-        foreach (var gameObj in gameObjects)
-        {
-            var gameObjPosition = gameObj.transform.position;
-            var curFoodDistance = GetDistance(curPosition, gameObjPosition);
-            if (curFoodDistance <= minDistance)
-            {
-                minDistance = curFoodDistance;
-                nearestPosition = gameObjPosition;
-            }
-        }
-        return nearestPosition;
+
+        var vector = gameObjects.Select(
+            obj => new { Distance = GetDistance(curPosition, obj.transform.position),
+                         Position = obj.transform.position
+                       })
+            .OrderBy(obj => obj.Distance)
+            .Select(obj => obj.Position)
+            .First();
+        return vector;
+        //float minDistance = GetDistance(curPosition, gameObjects.ElementAt(0).transform.position);
+        //var nearestPosition = gameObjects.ElementAt(0).transform.position;
+        //foreach (var gameObj in gameObjects)
+        //{
+        //    var gameObjPosition = gameObj.transform.position;
+        //    var curFoodDistance = GetDistance(curPosition, gameObjPosition);
+        //    if (curFoodDistance <= minDistance)
+        //    {
+        //        minDistance = curFoodDistance;
+        //        nearestPosition = gameObjPosition;
+        //    }
+        //}
+        //return nearestPosition;
     }
 
     /// <summary>
@@ -118,8 +127,8 @@ public class Cell : MonoBehaviour
     /// </summary>
     public void SetVision()
     {
-        var collider = gameObject.GetComponent<CircleCollider2D>();
-        collider.radius = Vision;
+        var visionColider = thisTransform.Find("Vision_colider").gameObject.GetComponent<CircleCollider2D>();
+        visionColider.radius = Vision;
     }
 
     /// <summary>

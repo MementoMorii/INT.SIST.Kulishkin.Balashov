@@ -13,13 +13,13 @@ public class StartGame : MonoBehaviour
     {
         for (int i = 0; i < 10; i++)
         {
-            Vector3 position = new Vector3(Random.Range(-10.0f, 0f), Random.Range(-10.0f, 0f), 0);
+            Vector3 position = new Vector3(Random.Range(-10.0f, 10.0f), Random.Range(-10.0f, 10.0f), 0);
             Instantiate(enemyPrefab, position, Quaternion.identity);
         }
 
         for (int i = 0; i < 10; i++)
         {
-            Vector3 position = new Vector3(Random.Range(0f, 10.0f), Random.Range(0f, 10.0f), 0);
+            Vector3 position = new Vector3(Random.Range(-10.0f, 10.0f), Random.Range(-10.0f, 10.0f), 0);
             Instantiate(veganPrefab, position, Quaternion.identity);
         }
 

@@ -25,7 +25,7 @@ public class VeganCell : Cell
     }
     public void VisionTriggerEnter(Collider2D collision)
     {
-        Debug.Log("вошел");
+        Debug.Log(collision.gameObject.tag);
         switch (collision.gameObject.tag)
         {
             case "Food":
@@ -44,7 +44,7 @@ public class VeganCell : Cell
     }
 
     ///  <inheritdoc>
-    public override void OnCollisionEnter2D(Collision2D collision)
+    public void OnCollisionEnter2D(Collision2D collision)
     {
         switch (collision.gameObject.tag)
         {
@@ -64,12 +64,32 @@ public class VeganCell : Cell
     ///  <inheritdoc>
     public override void MakeDecision()
     {
-        var position = thisTransform.position;
+        if (_foodInVision.Count == 0 && _enemyInVision.Count == 0) return;
 
-        var nearestFoodPosition = GetNearestPosition(position, _foodInVision);
-        var nearestEnemyPosition = GetNearestPosition(position, _enemyInVision);
-        var foodAngle = GetFoodAngle(position, nearestFoodPosition);
-        var fromEnemyAngle = GetEnemyAngle(position, nearestEnemyPosition);
+        var position = thisTransform.position;
+        Vector3 nearestFoodPosition;
+        Vector3 nearestEnemyPosition;
+        float foodAngle = 0f;
+        float fromEnemyAngle = 0f;
+        if (_foodInVision.Count != 0)
+        {
+            nearestFoodPosition = GetNearestPosition(position, _foodInVision);
+            foodAngle = GetFoodAngle(position, nearestFoodPosition);
+            if(_enemyInVision.Count == 0)
+            {
+                Moove(foodAngle / (2 * Mathf.PI));
+            }
+        }
+
+        if (_enemyInVision.Count != 0)
+        {
+            nearestEnemyPosition = GetNearestPosition(position, _enemyInVision);
+            fromEnemyAngle = GetEnemyAngle(position, nearestEnemyPosition);
+            if (_foodInVision.Count == 0)
+            {
+                Moove(fromEnemyAngle / (2 * Mathf.PI));
+            }
+        }
         var directionAngle = GetDirectionAngle(foodAngle, fromEnemyAngle) / (2 * Mathf.PI);
         Moove(directionAngle);
     }

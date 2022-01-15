@@ -22,10 +22,12 @@ public class EnemyCell : Cell
     }
     public void VisionTriggerEnter(Collider2D collision)
     {
+        Debug.Log(collision.gameObject.tag);
         switch (collision.gameObject.tag)
         {
             case "Vegan":
                 _cellsInVision.Add(collision.gameObject);
+                Debug.Log("Кол-во " + _cellsInVision.Count);
                 break;
 
             default:
@@ -34,7 +36,7 @@ public class EnemyCell : Cell
     }
 
     ///  <inheritdoc>
-    public override void OnCollisionEnter2D(Collision2D collision)
+    public void OnCollisionEnter2D(Collision2D collision)
     {
         switch (collision.gameObject.tag)
         {
@@ -51,7 +53,14 @@ public class EnemyCell : Cell
     ///  <inheritdoc>
     public override void MakeDecision()
     {
-        var position = thisTransform.position; 
+        if(_cellsInVision.Count == 0)
+        {
+            Moove(Random.Range(0f, 1.0f));
+            return;
+        }
+        var position = thisTransform.position;
+        //Debug.Log(position.ToString());
+        //Debug.Log("Клетки" + _cellsInVision.Count);
         var nearestCellPosition = GetNearestPosition(position, _cellsInVision);
         var angle = getCellAngle(position, nearestCellPosition) / (2 * Mathf.PI);
         Moove(angle);

@@ -16,12 +16,12 @@ public class Vegan_vision : MonoBehaviour
         
     }
 
-    void OnTriggerEnter(Collider2D collision)
+    void OnTriggerEnter2D(Collider2D collision)
     {
         transform.parent.GetComponent<VeganCell>().VisionTriggerEnter(collision);
     }
 
-    void OnTriggerExit(Collider2D collision)
+    void OnTriggerExit2D(Collider2D collision)
     {
         transform.parent.GetComponent<VeganCell>().VisionTriggerExit(collision);
     }

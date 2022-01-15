@@ -17,8 +17,8 @@ public abstract class Cell : MonoBehaviour
     /// </summary>
     public float BetweenFoodEnemyCoefAngle { get; set; } 
 
-    private float _speedEnergyConsumptionCoef = 1f;
-    private float _radiusEnergyConsumptionCoef = 1f;
+    private float _speedEnergyConsumptionCoef = 0.01f;
+    private float _radiusEnergyConsumptionCoef = 0.01f;
 
     protected Transform thisTransform;
 
@@ -29,8 +29,8 @@ public abstract class Cell : MonoBehaviour
         LifeExpectancy = 0;
         Energy = 70;
         BetweenFoodEnemyCoefAngle = 0.5f;
-        Speed = 20f;
-        Vision = 0.5f;
+        Speed = 1f;
+        Vision = 3f;
         MutationCoef = 0.1f;
 
         _reproduction.Mutate(this);

@@ -22,12 +22,11 @@ public class EnemyCell : Cell
     }
     public void VisionTriggerEnter(Collider2D collision)
     {
-        Debug.Log(collision.gameObject.tag);
+
         switch (collision.gameObject.tag)
         {
             case "Vegan":
                 _cellsInVision.Add(collision.gameObject);
-                Debug.Log("Кол-во " + _cellsInVision.Count);
                 break;
 
             default:

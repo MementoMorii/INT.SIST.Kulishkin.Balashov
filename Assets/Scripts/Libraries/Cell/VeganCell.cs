@@ -25,7 +25,6 @@ public class VeganCell : Cell
     }
     public void VisionTriggerEnter(Collider2D collision)
     {
-        Debug.Log(collision.gameObject.tag);
         switch (collision.gameObject.tag)
         {
             case "Food":
@@ -64,6 +63,7 @@ public class VeganCell : Cell
     ///  <inheritdoc>
     public override void MakeDecision()
     {
+        
         if (_foodInVision.Count == 0 && _enemyInVision.Count == 0) return;
 
         var position = thisTransform.position;
@@ -73,6 +73,7 @@ public class VeganCell : Cell
         float fromEnemyAngle = 0f;
         if (_foodInVision.Count != 0)
         {
+            Debug.Log("Еда есть");
             nearestFoodPosition = GetNearestPosition(position, _foodInVision);
             foodAngle = GetFoodAngle(position, nearestFoodPosition);
             if(_enemyInVision.Count == 0)
@@ -83,6 +84,7 @@ public class VeganCell : Cell
 
         if (_enemyInVision.Count != 0)
         {
+            Debug.Log("Есть враг");
             nearestEnemyPosition = GetNearestPosition(position, _enemyInVision);
             fromEnemyAngle = GetEnemyAngle(position, nearestEnemyPosition);
             if (_foodInVision.Count == 0)

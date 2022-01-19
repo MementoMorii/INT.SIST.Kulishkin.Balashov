@@ -48,6 +48,15 @@ public class EnemyCell : Cell
 
         }
     }
+    public override void SetParams()
+    {
+        thisTransform = transform;
+        LifeExpectancy = 0;
+        Energy = 70;
+        Speed = 2f;
+        Vision = 6f;
+        MutationCoef = 0.3f;
+    }
 
     ///  <inheritdoc>
     public override void MakeDecision()

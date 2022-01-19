@@ -17,23 +17,19 @@ public abstract class Cell : MonoBehaviour
     /// </summary>
     public float BetweenFoodEnemyCoefAngle { get; set; } 
 
-    private float _speedEnergyConsumptionCoef = 0.01f;
-    private float _radiusEnergyConsumptionCoef = 0.01f;
+    public float _speedEnergyConsumptionCoef { get; set; } = 0.5f;
+    public float _radiusEnergyConsumptionCoef { get; set; } = 0.5f;
 
     protected Transform thisTransform;
 
     // Start is called before the first frame update
     void Start()
     {
-        thisTransform = transform;
-        LifeExpectancy = 0;
-        Energy = 70;
-        BetweenFoodEnemyCoefAngle = 0.5f;
-        Speed = 1f;
-        Vision = 3f;
-        MutationCoef = 0.1f;
 
+        SetParams();
         _reproduction.Mutate(this);
+        var visionColider = thisTransform.Find("Vision_colider").gameObject.GetComponent<CircleCollider2D>();
+        visionColider.radius = Vision;
     }
 
     // Update is called once per frame
@@ -42,10 +38,11 @@ public abstract class Cell : MonoBehaviour
         if (Energy >= 80)
         {
             // вызывается метод размножения и в него передаётся gameObject Reproduction(gameObgect)
-            _reproduction.Reproduct(gameObject);
+            _reproduction.Reproduct(this);
+            Destroy(gameObject);
             return;
         }
-            
+
 
         //отнимание энергии за Vision. Формулу ещё можно подкорректировать.
         Energy -= Vision * Vision * _radiusEnergyConsumptionCoef * Time.deltaTime;
@@ -56,6 +53,17 @@ public abstract class Cell : MonoBehaviour
             Destroy(gameObject);
     }
 
+    public virtual void SetParams()
+    {
+        thisTransform = transform;
+        LifeExpectancy = 0;
+        Energy = 70;
+        BetweenFoodEnemyCoefAngle = 0.5f;
+        Speed = 1f;
+        Vision = 3f;
+        MutationCoef = 0.2f;
+    }
+
     /// <summary>
     /// Mетод осуществлющий перемещение клетки в заданном направлении с её скоростью.
     /// </summary>
@@ -64,7 +72,7 @@ public abstract class Cell : MonoBehaviour
     {
         thisTransform.position += new Vector3(1, 0, 0) * Speed * Time.deltaTime * Mathf.Cos(2 * Mathf.PI * angle);
         thisTransform.position += new Vector3(0, 1, 0) * Speed * Time.deltaTime * Mathf.Sin(2 * Mathf.PI * angle);
-        Energy -= Speed * Speed / 2 * Time.deltaTime * _speedEnergyConsumptionCoef;
+        Energy -= ((Speed * Speed) / 2) * (Time.deltaTime * _speedEnergyConsumptionCoef);
     }
 
     /// <summary>

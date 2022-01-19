@@ -27,6 +27,6 @@ public class FoodGeneration : MonoBehaviour
     private void SpawnFood()
     {
         Vector3 position = new Vector3(Random.Range(-10.0f, 10.0f), Random.Range(-10.0f, 10.0f), 0);
-        Instantiate(foodPrefab, position, Quaternion.identity);
+        MonoBehaviour.Instantiate(foodPrefab, position, Quaternion.identity);
     }
 }

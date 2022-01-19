@@ -7,6 +7,10 @@ public class VeganCell : Cell
     private HashSet<GameObject> _foodInVision = new HashSet<GameObject>();
     private HashSet<GameObject> _enemyInVision = new HashSet<GameObject>();
 
+    float movingTime = 0;
+    float movingLimitTime = 4;
+    float moveVector = 0.5f;
+
     public void VisionTriggerExit(Collider2D collision)
     {
         switch (collision.gameObject.tag)
@@ -29,12 +33,10 @@ public class VeganCell : Cell
         {
             case "Food":
                 _foodInVision.Add(collision.gameObject);
-                Debug.Log("food");
                 break;
 
             case "Enemy":
                 _enemyInVision.Add(collision.gameObject);
-                Debug.Log("enemy");
                 break;
 
             default:
@@ -63,8 +65,17 @@ public class VeganCell : Cell
     ///  <inheritdoc>
     public override void MakeDecision()
     {
-        
-        if (_foodInVision.Count == 0 && _enemyInVision.Count == 0) return;
+        movingTime += Time.deltaTime;
+        if (_foodInVision.Count == 0 && _enemyInVision.Count == 0)
+        {
+            if(movingTime > movingLimitTime)
+            {
+                moveVector = Random.Range(0f, 1.0f);
+                movingTime = 0;
+            }
+            Moove(moveVector);
+            return;
+        }
 
         var position = thisTransform.position;
         Vector3 nearestFoodPosition;
@@ -73,7 +84,7 @@ public class VeganCell : Cell
         float fromEnemyAngle = 0f;
         if (_foodInVision.Count != 0)
         {
-            Debug.Log("Еда есть");
+            
             nearestFoodPosition = GetNearestPosition(position, _foodInVision);
             foodAngle = GetFoodAngle(position, nearestFoodPosition);
             if(_enemyInVision.Count == 0)
@@ -84,7 +95,6 @@ public class VeganCell : Cell
 
         if (_enemyInVision.Count != 0)
         {
-            Debug.Log("Есть враг");
             nearestEnemyPosition = GetNearestPosition(position, _enemyInVision);
             fromEnemyAngle = GetEnemyAngle(position, nearestEnemyPosition);
             if (_foodInVision.Count == 0)

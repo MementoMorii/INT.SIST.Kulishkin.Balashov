@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using Assets.Scripts.Libraries;
 
 public abstract class Cell : MonoBehaviour
 {
@@ -17,19 +18,24 @@ public abstract class Cell : MonoBehaviour
     /// </summary>
     public float BetweenFoodEnemyCoefAngle { get; set; } 
 
-    public float _speedEnergyConsumptionCoef { get; set; } = 0.5f;
-    public float _radiusEnergyConsumptionCoef { get; set; } = 0.5f;
+    public float _speedEnergyConsumptionCoef { get; set; } = 0.01f;
+    public float _radiusEnergyConsumptionCoef { get; set; } = 0.01f;
+    public bool isChild { get; set; } = false;
 
     protected Transform thisTransform;
 
     // Start is called before the first frame update
     void Start()
     {
-
-        SetParams();
+        thisTransform = transform;
+        if (!isChild)
+            SetParams();
+        else
+            Debug.Log("Это чиелд");
         _reproduction.Mutate(this);
         var visionColider = thisTransform.Find("Vision_colider").gameObject.GetComponent<CircleCollider2D>();
         visionColider.radius = Vision;
+        EventBus.OnBorn(this);
     }
 
     // Update is called once per frame
@@ -39,28 +45,33 @@ public abstract class Cell : MonoBehaviour
         {
             // вызывается метод размножения и в него передаётся gameObject Reproduction(gameObgect)
             _reproduction.Reproduct(this);
-            Destroy(gameObject);
+            KillCell();
             return;
         }
 
 
         //отнимание энергии за Vision. Формулу ещё можно подкорректировать.
         Energy -= Vision * Vision * _radiusEnergyConsumptionCoef * Time.deltaTime;
-
+        Energy -= 1.0f * Time.deltaTime;
         MakeDecision();
 
         if (Energy <= 0)
-            Destroy(gameObject);
+            KillCell();
+    }
+    public void KillCell()
+    {
+        EventBus.OnDie(this);
+        Destroy(gameObject);
     }
 
     public virtual void SetParams()
     {
-        thisTransform = transform;
+        
         LifeExpectancy = 0;
         Energy = 70;
         BetweenFoodEnemyCoefAngle = 0.5f;
-        Speed = 1f;
-        Vision = 3f;
+        Speed = 2f + Random.Range(-2.0f, 2.0f);
+        Vision = 15f;
         MutationCoef = 0.2f;
     }
 

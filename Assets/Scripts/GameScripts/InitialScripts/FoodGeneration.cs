@@ -5,7 +5,7 @@ using UnityEngine;
 public class FoodGeneration : MonoBehaviour
 {
     public GameObject foodPrefab;
-    float foodSpawnPeriod = 0.5f;
+    float foodSpawnPeriod = 0.1f;
     float foodSpawnElapsedTime = 0f;
     // Start is called before the first frame update
     void Start()
@@ -26,7 +26,7 @@ public class FoodGeneration : MonoBehaviour
 
     private void SpawnFood()
     {
-        Vector3 position = new Vector3(Random.Range(-10.0f, 10.0f), Random.Range(-10.0f, 10.0f), 0);
+        Vector3 position = new Vector3(Random.Range(-20.0f, 20.0f), Random.Range(-20.0f, 20.0f), 0);
         MonoBehaviour.Instantiate(foodPrefab, position, Quaternion.identity);
     }
 }

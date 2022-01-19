@@ -50,7 +50,7 @@ public class VeganCell : Cell
         switch (collision.gameObject.tag)
         {
             case "Enemy":
-                Destroy(gameObject);
+                KillCell();
                 break;
 
             case "Food":
@@ -90,6 +90,7 @@ public class VeganCell : Cell
             if(_enemyInVision.Count == 0)
             {
                 Moove(foodAngle / (2 * Mathf.PI));
+                return;
             }
         }
 
@@ -100,6 +101,7 @@ public class VeganCell : Cell
             if (_foodInVision.Count == 0)
             {
                 Moove(fromEnemyAngle / (2 * Mathf.PI));
+                return;
             }
         }
         var directionAngle = GetDirectionAngle(foodAngle, fromEnemyAngle) / (2 * Mathf.PI);
